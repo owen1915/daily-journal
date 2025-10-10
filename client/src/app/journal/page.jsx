@@ -1,28 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth } from "@/lib/firebase"; // only auth, no Firestore
+import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { collection, addDoc } from "firebase/firestore";
 import "./journal.css";
 
 export default function JournalPage() {
   const [entry, setEntry] = useState("");
-  const [entries, setEntries] = useState([]);
+  const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (!user) router.push("/login");
-      else loadEntries(user.uid);
     });
     return () => unsubscribe();
   }, []);
 
-  // --- Backend placeholder ---
-  async function loadEntries(uid) {
-    console.log("Fetching entries for user:", uid);
-    // TODO: GET from your backend
+  async function loadEntries() {
+    // skeleton to load entries for showcasing
   }
 
   async function handleSubmit(e) {
@@ -30,11 +28,20 @@ export default function JournalPage() {
     const user = auth.currentUser;
     if (!user || !entry.trim()) return;
 
-    console.log("Submitting entry:", entry);
-    // TODO: POST to your backend
+    try {
+      await addDoc(collection(db, "journalEntries"), {
+        uid: user.uid,
+        text: entry.trim(),
+        timestamp: new Date(),
+      });
 
-    setEntry("");
-    await loadEntries(user.uid);
+      console.log("Submitted entry:", entry);
+      setEntry("");
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000); // disappear after 2 seconds
+    } catch (err) {
+      console.error("Error submitting entry:", err);
+    }
   }
 
   function handleLogout() {
@@ -42,10 +49,15 @@ export default function JournalPage() {
     router.push("/login");
   }
 
-  // --- UI ---
   return (
     <div className="journal-page">
       <button onClick={handleLogout} className="logout">Logout</button>
+
+      {showSuccess && (
+        <div className="success-popup">
+          Submitted!
+        </div>
+      )}
 
       <div className="title">
         <h1>Daily Journal</h1>
@@ -55,7 +67,7 @@ export default function JournalPage() {
         <h1>Add Journal Entry</h1>
         <form onSubmit={handleSubmit}>
           <textarea
-            placeholder="Write your thoughts..."
+            placeholder="Write how you feel..."
             value={entry}
             onChange={(e) => setEntry(e.target.value)}
             rows="4"
