@@ -1,7 +1,7 @@
 # CS 3704 Group Project
 
 # Project Title
-Daily Journal
+Daily-Journal
 
 # Names and PIDs
 Michael Bolmer - mbolmer<br>
