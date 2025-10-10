@@ -4,11 +4,11 @@
 Daily Journal
 
 # Names and PIDs:
-Michael Bolmer - mbolmer
-Benjamin Hardin - hardinben
-Brandon Duong - brandon05
-Luke Lyons - lukelyons
-Owen Goodman - owengoodman3
+Michael Bolmer - mbolmer<br>
+Benjamin Hardin - hardinben<br>
+Brandon Duong - brandon05<br>
+Luke Lyons - lukelyons<br>
+Owen Goodman - owengoodman3<br>
 Theo Tran - ttheo05
 
 # Project Idea:
