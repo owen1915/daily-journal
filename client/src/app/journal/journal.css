@@ -1,0 +1,68 @@
+.journal-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative; 
+  overflow: hidden;
+}
+
+.journal-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 500px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  border: 3px solid black;
+  max-height: 80vh;
+  margin: 2rem;
+  overflow-y: auto;
+}
+
+.journal-container h1{
+  font-size: large;
+  margin-bottom: 1rem;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  resize: none;
+}
+
+button {
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background-color: #0059c9;
+}
+
+button.logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button.logout:hover {
+  background-color: #c72e3b;
+}
+
