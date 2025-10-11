@@ -34,6 +34,95 @@
   margin-bottom: 1rem;
 }
 
+/* Simple Rich Text Editor Styles */
+.editor-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 48px;
+}
+
+.toolbar-btn {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  color: #333;
+  font-weight: normal;
+}
+
+.toolbar-btn strong,
+.toolbar-btn em,
+.toolbar-btn u,
+.toolbar-btn s {
+  font-weight: bold;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.toolbar-btn:hover {
+  background-color: #e9ecef;
+}
+
+.toolbar-btn:active {
+  background-color: #0070f3;
+  color: white;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background-color: #ccc;
+  margin: 0 0.25rem;
+}
+
+.rich-text-editor {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  font-size: 1rem;
+  line-height: 1.5;
+  outline: none;
+  background-color: white;
+  margin-bottom: 1rem;
+  text-align: left;
+  position: relative;
+}
+
+.rich-text-editor:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  font-style: italic;
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  pointer-events: none;
+}
+
+.rich-text-editor:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+/* Legacy textarea styles (kept for compatibility) */
 textarea {
   width: 100%;
   padding: 0.75rem;
@@ -178,5 +267,17 @@ button.logout:hover {
   .past-entries-container {
     width: 95%;
     padding: 1.5rem;
+  }
+  
+  .editor-toolbar {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .toolbar-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    padding: 0.25rem;
   }
 }
