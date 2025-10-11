@@ -5,6 +5,8 @@ import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { collection, addDoc, query, where, orderBy, getDocs } from "firebase/firestore";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import "./journal.css";
 
 export default function JournalPage() {
@@ -12,7 +14,9 @@ export default function JournalPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [pastEntries, setPastEntries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const editorRef = useRef(null);
+  const pdfRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -65,6 +69,118 @@ export default function JournalPage() {
   const handleEditorChange = () => {
     if (editorRef.current) {
       setEntry(editorRef.current.innerHTML);
+    }
+  };
+
+  const downloadPDF = async () => {
+    if (pastEntries.length === 0) {
+      alert('No entries to download');
+      return;
+    }
+
+    setDownloading(true);
+    try {
+      // Create a temporary container for PDF content
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.style.top = '0';
+      tempContainer.style.width = '800px';
+      tempContainer.style.backgroundColor = 'white';
+      tempContainer.style.padding = '40px';
+      tempContainer.style.fontFamily = 'Arial, sans-serif';
+      tempContainer.style.color = 'black';
+      document.body.appendChild(tempContainer);
+
+      // Add title
+      const title = document.createElement('h1');
+      title.textContent = 'My Journal Entries';
+      title.style.textAlign = 'center';
+      title.style.color = '#0070f3';
+      title.style.marginBottom = '30px';
+      title.style.fontSize = '24px';
+      title.style.borderBottom = '2px solid #0070f3';
+      title.style.paddingBottom = '10px';
+      tempContainer.appendChild(title);
+
+      // Add entries
+      pastEntries.forEach((entry, index) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.style.marginBottom = '30px';
+        entryDiv.style.pageBreakInside = 'avoid';
+        entryDiv.style.border = '1px solid #e0e0e0';
+        entryDiv.style.borderRadius = '8px';
+        entryDiv.style.padding = '20px';
+        entryDiv.style.backgroundColor = '#f8f9fa';
+
+        // Add date
+        const dateDiv = document.createElement('div');
+        dateDiv.style.fontSize = '14px';
+        dateDiv.style.color = '#666';
+        dateDiv.style.fontWeight = 'bold';
+        dateDiv.style.marginBottom = '10px';
+        dateDiv.style.borderBottom = '1px solid #dee2e6';
+        dateDiv.style.paddingBottom = '8px';
+        dateDiv.textContent = entry.timestamp.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        entryDiv.appendChild(dateDiv);
+
+        // Add content
+        const contentDiv = document.createElement('div');
+        contentDiv.innerHTML = entry.htmlContent || entry.text;
+        contentDiv.style.fontSize = '16px';
+        contentDiv.style.lineHeight = '1.6';
+        contentDiv.style.color = '#333';
+        entryDiv.appendChild(contentDiv);
+
+        tempContainer.appendChild(entryDiv);
+      });
+
+      // Generate PDF
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: 'white'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Clean up
+      document.body.removeChild(tempContainer);
+
+      // Download
+      const fileName = `journal-entries-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -211,7 +327,19 @@ export default function JournalPage() {
 
         {/* Past Entries Section */}
         <div className="past-entries-container">
-          <h2>Past Entries</h2>
+          <div className="past-entries-header">
+            <h2>Past Entries</h2>
+            {pastEntries.length > 0 && (
+              <button 
+                onClick={downloadPDF}
+                disabled={downloading}
+                className="download-btn"
+                title="Download all entries as PDF"
+              >
+                {downloading ? 'Generating PDF...' : '📄 Download PDF'}
+              </button>
+            )}
+          </div>
           {loading ? (
             <p className="loading">Loading entries...</p>
           ) : pastEntries.length === 0 ? (
