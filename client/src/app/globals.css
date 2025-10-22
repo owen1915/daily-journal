@@ -35,3 +35,41 @@ body {
   text-shadow: 0 0 3px black;
 }
 
+button.logout {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button.logout:hover {
+  background-color: #c72e3b;
+}
+
+.button-container {
+  position: absolute;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+button.transport {
+  background-color: #766af0;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button.transport:hover {
+  background-color: #5177e9;
+}

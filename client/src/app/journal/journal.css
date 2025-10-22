@@ -147,23 +147,6 @@ button:hover {
   background-color: #0059c9;
 }
 
-button.logout {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: #e63946;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-button.logout:hover {
-  background-color: #c72e3b;
-}
-
 .success-popup {
   position: fixed;
   top: 50%;

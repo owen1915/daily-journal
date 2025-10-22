@@ -218,9 +218,16 @@ export default function JournalPage() {
     router.push("/login");
   }
 
+  function handleTransport() {
+        router.push("/stats");
+    }
+
   return (
     <div className="journal-page">
-      <button onClick={handleLogout} className="logout">Logout</button>
+      <div className="button-container">
+        <button onClick={handleTransport} className="transport">Stats</button>
+        <button onClick={handleLogout} className="logout">Logout</button>
+      </div>
 
       {showSuccess && (
         <div className="success-popup">
