@@ -324,3 +324,34 @@ button.logout:hover {
     justify-content: center;
   }
 }
+
+.mood-label {
+  display: block;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.mood-input {
+  width: 80px;
+  padding: 6px 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.mood-input:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 3px rgba(0, 112, 243, 0.4);
+}
+
+.entry-mood {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #555;
+  font-style: italic;
+}

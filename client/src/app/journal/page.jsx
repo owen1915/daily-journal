@@ -18,6 +18,7 @@ export default function JournalPage() {
   const editorRef = useRef(null);
   const pdfRef = useRef(null);
   const router = useRouter();
+  const [mood, setMood] = useState(5);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -194,11 +195,13 @@ export default function JournalPage() {
         uid: user.uid,
         text: entry.trim(),
         htmlContent: entry.trim(),
+        mood, 
         timestamp: new Date(),
       });
 
       console.log("Submitted entry:", entry);
       setEntry("");
+      setMood(5);
       if (editorRef.current) {
         editorRef.current.innerHTML = "";
       }
@@ -320,6 +323,19 @@ export default function JournalPage() {
               data-placeholder="Write how you feel..."
               suppressContentEditableWarning={true}
             ></div>
+            <div>
+              <label className="mood-label">
+                How are you feeling today? (1–10)
+              </label>
+              <input
+                type="number" 
+                min="1" 
+                max="10" 
+                value={mood} 
+                onChange={(e) => setMood(Number(e.target.value))} 
+                className="mood-input"
+              />
+            </div>
             
             <button type="submit">Add Entry</button>
           </form>
@@ -358,6 +374,7 @@ export default function JournalPage() {
                       minute: '2-digit'
                     })}
                   </div>
+                  <div className="entry-mood">Mood: {entry.mood}/10</div>
                   <div 
                     className="entry-text" 
                     dangerouslySetInnerHTML={{ __html: entry.htmlContent || entry.text }}
