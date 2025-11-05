@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/reminder",
+      "schedule": "0 17 * * *",
+      "timezone": "America/New_York"
+    }
+  ]
+}
