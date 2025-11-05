@@ -58,20 +58,25 @@ export default function StatsPage() {
     }
 
     function calculateStreak(entries) {
-        if (entries.length > 0) {
-            let currentStreak = 1;
-            for (let i = 1; i < entries.length; i++) {
-                const prev = entries[i - 1].timestamp;
-                const curr = entries[i].timestamp;
-                const diffDays = Math.floor((prev - curr) / (1000 * 60 * 60 * 24));
-                if (diffDays === 1) currentStreak++;
-                else if (diffDays > 1) break;
-            }
-            setStreak(currentStreak);
-        } 
-        else {
-            setStreak(0);
+        if (entries.length === 0) return setStreak(0);
+
+        entries.sort((a, b) => a.timestamp - b.timestamp);
+
+        let currentStreak = 1;
+        for (let i = entries.length - 1; i > 0; i--) {
+            const curr = entries[i].timestamp;
+            const prev = entries[i - 1].timestamp;
+            const diffDays = Math.floor((curr - prev) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) currentStreak++;
+            else if (diffDays > 1) break;
         }
+
+        const last = entries[entries.length - 1].timestamp;
+        const now = new Date();
+        const daysSinceLast = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+        if (daysSinceLast > 1) currentStreak = 0;
+
+        setStreak(currentStreak);
     }
     
     function handleLogout() {
