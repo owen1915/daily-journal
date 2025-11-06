@@ -7,6 +7,7 @@ import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "./stats.css";
+import MoodCalendar from "./components/calender";
 
 
 export default function StatsPage() {
@@ -136,17 +137,22 @@ export default function StatsPage() {
 
         <div className="stats-content">
 
-        <div className="stats-container">
-            <div className="streak-box">
-            <h2>🔥 Current Streak: {streak} day{streak !== 1 ? "s" : ""}</h2>
+        <div className="left-container">
+            <div className="stats-container">
+                <div className="streak-box">
+                    <h2>🔥 Current Streak: {streak} day{streak !== 1 ? "s" : ""}</h2>
+                </div>
             </div>
+            <MoodCalendar entries={pastEntries} />
         </div>
+        
 
 
         <div className="summary-container">
             <h2 className="summary-title">🧠 Monthly Summary</h2>
             <p className="summary-text">{summary || "Generating summary..."}</p>
         </div>
+
         </div>
     </div>
     );

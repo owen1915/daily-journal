@@ -396,7 +396,7 @@ export default function JournalPage() {
               </button>
             )}
           </div>
-          <div className="past-entries-controls" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', marginTop: '8px' }}>
+          <div className="past-entries-controls" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', marginTop: '8px', marginBottom: '8px' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               Sort:
               <select value={sortDir} onChange={(e) => setSortDir(e.target.value)}>
