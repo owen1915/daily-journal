@@ -7,9 +7,6 @@ import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "./stats.css";
-import { generateSummary } from "../stats/Components/Summary";
-
-
 
 
 export default function StatsPage() {
@@ -21,14 +18,35 @@ export default function StatsPage() {
     const [summary, setSummary] = useState("");
 
     useEffect(() => {
-        async function fetchSummary() {
-            const text = await generateSummary();
-            setSummary(text);
-        }
-        fetchSummary();
+    async function fetchSummary() {
+        const user = auth.currentUser;
+        if (!user) return;
 
-        console.log("done fetching summary");
+        // load entries client-side (you already have permission)
+        const q = query(collection(db, "journalEntries"), where("uid", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        const entries = [];
+        querySnapshot.forEach((doc) => {
+        entries.push({ id: doc.id, ...doc.data(), timestamp: doc.data().timestamp.toDate() });
+        });
+
+        try {
+        const res = await fetch("/api/summary", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ entries }),
+        });
+        const data = await res.json();
+        setSummary(data.summary || "No summary available.");
+        } catch (err) {
+        console.error("Error fetching summary:", err);
+        setSummary("Error generating summary.");
+        }
+    }
+
+    fetchSummary();
     }, []);
+
 
     useEffect( () => {
         console.log(summary);
