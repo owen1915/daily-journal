@@ -19,6 +19,12 @@ export default function JournalPage() {
   const pdfRef = useRef(null);
   const router = useRouter();
   const [mood, setMood] = useState(5);
+  const [allEntries, setAllEntries] = useState([]);
+
+  // filter and sort states
+  const [sortDir, setSortDir] = useState('desc'); 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState(''); 
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -49,9 +55,9 @@ export default function JournalPage() {
           timestamp: doc.data().timestamp.toDate()
         });
       });
-      // Sort entries by timestamp in descending order (newest first) in JavaScript
-      entries.sort((a, b) => b.timestamp - a.timestamp);
-      setPastEntries(entries);
+      // keep a copy and apply client-side filters
+      setAllEntries(entries);
+      applyFilters(entries);
     } catch (err) {
       console.error("Error loading entries:", err);
     } finally {
@@ -59,7 +65,33 @@ export default function JournalPage() {
     }
   }
 
-  // Simple rich text editor functions
+  function applyFilters(source) {
+    let result = Array.isArray(source) ? [...source] : [];
+
+    
+    if (startDate) {
+      const s = new Date(startDate);
+      s.setHours(0, 0, 0, 0);
+      result = result.filter((e) => e.timestamp >= s);
+    }
+    if (endDate) {
+      const ed = new Date(endDate);
+      ed.setHours(23, 59, 59, 999);
+      result = result.filter((e) => e.timestamp <= ed);
+    }
+
+    // sort by selected direction
+    result.sort((a, b) =>
+      sortDir === 'desc' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp
+    );
+
+    setPastEntries(result);
+  }
+
+  useEffect(() => {
+    applyFilters(allEntries);
+  }, [sortDir, startDate, endDate, allEntries]);
+
   const execCommand = (command, value = null) => {
     document.execCommand(command, false, value);
     if (editorRef.current) {
@@ -362,6 +394,31 @@ export default function JournalPage() {
                 {downloading ? 'Generating PDF...' : '📄 Download PDF'}
               </button>
             )}
+          </div>
+          <div className="past-entries-controls" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', marginTop: '8px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              Sort:
+              <select value={sortDir} onChange={(e) => setSortDir(e.target.value)}>
+                <option value="desc">Newest first</option>
+                <option value="asc">Oldest first</option>
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              From:
+              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              To:
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </label>
+            <button
+              type="button"
+              onClick={() => { setStartDate(''); setEndDate(''); }}
+              className="download-btn"
+              title="Clear date filters"
+            >
+              Clear
+            </button>
           </div>
           {loading ? (
             <p className="loading">Loading entries...</p>
