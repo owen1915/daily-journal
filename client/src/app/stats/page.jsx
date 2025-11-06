@@ -7,6 +7,8 @@ import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "./stats.css";
+import { generateSummary } from "../stats/Components/Summary";
+
 
 
 
@@ -15,6 +17,23 @@ export default function StatsPage() {
     const [streak, setStreak] = useState(0);
     const [loading, setLoading] = useState(false);
     const [pastEntries, setPastEntries] = useState([]);
+
+    const [summary, setSummary] = useState("");
+
+    useEffect(() => {
+        async function fetchSummary() {
+            const text = await generateSummary();
+            setSummary(text);
+        }
+        fetchSummary();
+
+        console.log("done fetching summary");
+    }, []);
+
+    useEffect( () => {
+        console.log(summary);
+    }, [summary])
+
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -89,19 +108,29 @@ export default function StatsPage() {
     }
 
     return (
-        <div className="stats-page">
-            <div className="button-container">
-                <button onClick={handleTransport} className="transport">Journal</button>
-                <button onClick={handleLogout} className="logout">Logout</button>
-            </div>
-            <h1 className="title">Daily Journal</h1>
-            <div className="stats-container">
-                <div className="stats-content">
-                    <div className="streak-box">
-                        <h2>🔥 Current Streak: {streak} day{streak !== 1 ? "s" : ""}</h2>
-                    </div>
-                </div>
+    <div className="stats-page">
+        <div className="button-container">
+        <button onClick={handleTransport} className="transport">Journal</button>
+        <button onClick={handleLogout} className="logout">Logout</button>
+        </div>
+
+        <h1 className="title">Daily Journal</h1>
+
+        <div className="stats-content">
+
+        <div className="stats-container">
+            <div className="streak-box">
+            <h2>🔥 Current Streak: {streak} day{streak !== 1 ? "s" : ""}</h2>
             </div>
         </div>
+
+
+        <div className="summary-container">
+            <h2 className="summary-title">🧠 Monthly Summary</h2>
+            <p className="summary-text">{summary || "Generating summary..."}</p>
+        </div>
+        </div>
+    </div>
     );
+
 }

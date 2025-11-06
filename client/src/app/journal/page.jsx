@@ -254,6 +254,7 @@ export default function JournalPage() {
         router.push("/stats");
     }
 
+
   return (
     <div className="journal-page">
       <div className="button-container">

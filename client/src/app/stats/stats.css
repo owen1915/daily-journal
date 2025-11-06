@@ -4,35 +4,59 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  position: relative; 
+  position: relative;
   overflow-x: hidden;
   padding: 2rem 0;
 }
+
 
 .stats-content {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap; 
   max-width: 1200px;
   width: 100%;
   padding: 0 2rem;
 }
 
+
 .stats-container {
   background: white;
   padding: 2rem;
   border-radius: 10px;
-  width: 500px;
+  width: 450px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  text-align: center;
   border: 3px solid black;
+  text-align: center;
+}
+
+
+.summary-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 450px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border: 3px solid black;
+  text-align: left;
   flex-shrink: 0;
 }
 
-.stats-container h1{
-  font-size: large;
+.summary-title {
+  font-size: 1.3rem;
+  font-weight: bold;
   margin-bottom: 1rem;
 }
+
+.summary-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap; 
+}
+
 
 .streak-box {
   background: #fff3cd;
