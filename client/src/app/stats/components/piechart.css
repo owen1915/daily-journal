@@ -1,0 +1,16 @@
+.piechart-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  border: 3px solid black;
+}
+
+.piechart-title {
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  color: black;
+  font-weight: bold;
+}
