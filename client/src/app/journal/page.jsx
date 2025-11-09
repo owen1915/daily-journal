@@ -20,6 +20,7 @@ export default function JournalPage() {
   const router = useRouter();
   const [mood, setMood] = useState(5);
   const [allEntries, setAllEntries] = useState([]);
+  const [privacy, setPrivacy] = useState('private');
 
   // filter and sort states
   const [sortDir, setSortDir] = useState('desc'); 
@@ -228,6 +229,7 @@ export default function JournalPage() {
         text: entry.trim(),
         htmlContent: entry.trim(),
         mood, 
+        privacy,
         timestamp: new Date(),
       });
 
@@ -363,6 +365,25 @@ export default function JournalPage() {
               data-placeholder="Write how you feel..."
               suppressContentEditableWarning={true}
             ></div>
+            <div className="privacy-toggle">
+              <label className="privacy-label">Entry Privacy:</label>
+              <div className="privacy-options">
+                <button
+                  type="button"
+                  className={`privacy-btn ${privacy === "private" ? "active" : ""}`}
+                  onClick={() => setPrivacy("private")}
+                >
+                  🔒 Private {privacy === "private" && "✔"}
+                </button>
+                <button
+                  type="button"
+                  className={`privacy-btn ${privacy === "public" ? "active" : ""}`}
+                  onClick={() => setPrivacy("public")}
+                >
+                  🌐 Public {privacy === "public" && "✔"}
+                </button>
+              </div>
+          </div>
             <div>
               <label className="mood-label">
                 How are you feeling today? (1–10)
@@ -444,6 +465,7 @@ export default function JournalPage() {
                     className="entry-text" 
                     dangerouslySetInnerHTML={{ __html: entry.htmlContent || entry.text }}
                   ></div>
+                  <div className="entry-privacy">Privacy: {entry.privacy}</div>
                 </div>
               ))}
             </div>

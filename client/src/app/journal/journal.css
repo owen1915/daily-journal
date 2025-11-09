@@ -338,3 +338,39 @@ button:hover {
   color: #555;
   font-style: italic;
 }
+
+.privacy-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.privacy-options {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.privacy-btn {
+  background: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.privacy-btn:hover {
+  background: #f2f2f2;
+}
+
+.privacy-btn.active {
+  background: #000;
+  color: white;
+  transform: scale(1.05);
+}
