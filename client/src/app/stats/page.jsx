@@ -115,6 +115,9 @@ export default function StatsPage() {
     <div className="stats-page">
       <div className="button-container">
         <button onClick={handleTransport} className="transport">Journal</button>
+        <button onClick={() => router.push("/friends")} className="transport">
+          Friends
+        </button>
         <button onClick={handleLogout} className="logout">Logout</button>
       </div>
 

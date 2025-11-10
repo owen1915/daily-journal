@@ -8,6 +8,7 @@ import { collection, addDoc, query, where, orderBy, getDocs } from "firebase/fir
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import "./journal.css";
+import { setDoc, doc } from "firebase/firestore";
 
 export default function JournalPage() {
   const [entry, setEntry] = useState("");
@@ -26,6 +27,19 @@ export default function JournalPage() {
   const [sortDir, setSortDir] = useState('desc'); 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState(''); 
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          uid: user.uid,
+          email: user.email,
+        },
+        { merge: true }
+      );
+    }
+  });
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -261,6 +275,9 @@ export default function JournalPage() {
     <div className="journal-page">
       <div className="button-container">
         <button onClick={handleTransport} className="transport">Stats</button>
+        <button onClick={() => router.push("/friends")} className="transport">
+          Friends
+        </button>
         <button onClick={handleLogout} className="logout">Logout</button>
       </div>
 

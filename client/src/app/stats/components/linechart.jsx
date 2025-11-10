@@ -12,21 +12,28 @@ import {
 import "./linechart.css";
 
 export default function MoodLineChart({ entries }) {
-  const data = entries
+  const grouped = {};
+  entries
     .filter((e) => e.mood !== undefined)
-    .sort((a, b) => a.timestamp - b.timestamp)
-    .map((e) => ({
-      date: e.timestamp.toLocaleDateString("en-US", {
+    .forEach((e) => {
+      const date = e.timestamp.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-      }),
-      mood: e.mood,
-    }));
+      });
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(e);
+    });
+
+  const data = Object.entries(grouped).map(([date, arr]) => ({
+    date,
+    mood: arr.reduce((sum, e) => sum + e.mood, 0) / arr.length,
+    ratings: arr.map((e) => e.mood),
+  }));
 
   const getMoodColor = (mood) => {
-    if (mood <= 3) return "#ff4d4d"; 
-    if (mood <= 6) return "#ffcc00"; 
-    return "#33cc33"; 
+    if (mood <= 3) return "#ff4d4d";
+    if (mood <= 6) return "#ffcc00";
+    return "#33cc33";
   };
 
   const CustomDot = (props) => {
@@ -41,6 +48,27 @@ export default function MoodLineChart({ entries }) {
         strokeWidth={0.5}
       />
     );
+  };
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const info = payload[0].payload;
+      return (
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            padding: "8px",
+            textAlign: "center",
+          }}
+        >
+          <strong>{info.date}</strong>
+          <div>Mood ratings: {info.ratings.join(", ")}</div>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -59,14 +87,7 @@ export default function MoodLineChart({ entries }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
           <XAxis dataKey="date" tick={{ fill: "#444" }} />
           <YAxis domain={[1, 10]} tick={{ fill: "#444" }} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "white",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-            }}
-          />
-
+          <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"
             dataKey="mood"
